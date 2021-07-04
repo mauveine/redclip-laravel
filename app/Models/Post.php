@@ -21,4 +21,8 @@ class Post extends Model
     public function votes () {
         return $this->hasMany(Vote::class, 'post_id', 'id');
     }
+
+    public function myVote () {
+        return $this->hasMany(Vote::class, 'post_id', 'id')->where('username', session()->get('username'));
+    }
 }

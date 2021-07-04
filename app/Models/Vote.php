@@ -10,6 +10,6 @@ class Vote extends Model
     use HasFactory;
 
     protected $fillable = [
-        'post_id', 'comment_id'
+        'post_id', 'comment_id', 'username'
     ];
 }
