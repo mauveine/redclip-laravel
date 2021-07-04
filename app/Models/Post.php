@@ -13,4 +13,12 @@ class Post extends Model
     protected $fillable = [
         'username', 'title', 'content', 'content_type'
     ];
+
+    public function voted ($username) {
+        return $this->votes()->where('username', '=', $username)->count(['id']) > 0;
+    }
+
+    public function votes () {
+        return $this->hasMany(Vote::class, 'post_id', 'id');
+    }
 }

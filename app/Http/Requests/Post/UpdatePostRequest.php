@@ -4,7 +4,7 @@
 namespace App\Http\Requests\Post;
 
 
-class UpdatePostRequest extends GetPostRequest
+class UpdatePostRequest extends DeletePostRequest
 {
     protected $method = 'PATCH';
 

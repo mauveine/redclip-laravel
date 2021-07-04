@@ -4,7 +4,7 @@
 namespace App\Http\Requests\Comment;
 
 
-class UpdateCommentRequest extends BaseCommentRequest
+class UpdateCommentRequest extends DeleteCommentRequest
 {
     protected $method = 'PATCH';
 
