@@ -8,13 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comment extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'username', 'reply', 'post_id'
-    ];
-
-    protected $hidden = [
-        'deleted_at'
     ];
 }

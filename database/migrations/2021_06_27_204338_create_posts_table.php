@@ -19,7 +19,6 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->text('content');
             $table->string('content_type');
-            $table->softDeletes();
             $table->timestamps();
             $table->unique(['username', 'title', 'content']);
         });
