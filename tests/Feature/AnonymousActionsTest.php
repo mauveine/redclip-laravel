@@ -19,4 +19,11 @@ class AnonymousActionsTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_site_contains_anon_data () {
+        $response = $this->json('GET', '/api/');
+        $response->assertJsonStructure([
+            'username'
+        ]);
+    }
 }

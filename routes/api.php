@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('anonymous')->get('/test', [PostController::class, 'test']);
+Route::middleware('anonymous')->get('/', [PostController::class, 'test']);
