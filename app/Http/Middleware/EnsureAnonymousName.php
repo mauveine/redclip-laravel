@@ -19,7 +19,7 @@ class EnsureAnonymousName
     {
         $faker = Factory::create();
         if (!session()->get('username')) {
-            session()->put('username', $faker->unique()->userName);
+            session()->put('username', $faker->unique()->userName . $faker->unique()->uuid);
         }
         return $next($request);
     }

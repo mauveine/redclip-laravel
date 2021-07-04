@@ -12,6 +12,10 @@ class PostController extends Base
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function test (Request $request) {
-        return $this->respond(['gg' => true]);
+        return $this->respond([]);
+    }
+
+    public function create (Request $request) {
+
     }
 }
