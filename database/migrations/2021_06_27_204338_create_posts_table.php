@@ -20,7 +20,7 @@ class CreatePostsTable extends Migration
             $table->text('content');
             $table->string('content_type');
             $table->timestamps();
-            $table->unique(['username', 'title', 'content']);
+            $table->unique(['username', 'title']);
         });
     }
 
