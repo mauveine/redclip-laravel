@@ -6,9 +6,11 @@ use App\Http\Requests\Post\CreatePostRequest;
 use App\Http\Requests\Post\DeletePostRequest;
 use App\Http\Requests\Post\GetAllPostRequest;
 use App\Http\Requests\Post\GetPostRequest;
+use App\Http\Requests\Post\UpdatePostRequest;
 use App\Http\Requests\Post\VotePostRequest;
 use App\Models\Post;
 use App\Models\Vote;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -45,13 +47,17 @@ class PostController extends Base
     }
 
 
-    public function create (CreatePostRequest $request) {
+    public function store (CreatePostRequest $request) {
         $validate = $request->validated();
         try {
             $post = Post::create($request->all());
             return $this->respond([
                 'data' => $post->toArray()
             ]);
+        } catch (QueryException $exception) {
+            return $this->respond([
+                'error' => 'Duplicate key'
+            ], parent::FORBIDDEN);
         } catch (\Exception $e) {
             return $this->respond([
                 'error' => $e->getMessage()
@@ -63,7 +69,7 @@ class PostController extends Base
     public function show (GetPostRequest $request, $postId) {
         $validate = $request->validated();
         try {
-            $post = Post::withCount(['votes', 'myVote'])->where('id', '=', (int)$postId);
+            $post = Post::withCount(['votes', 'myVote'])->where('id', '=', (int)$postId)->first();
             return $this->respond([
                 'data' => $post->toArray()
             ]);
@@ -74,11 +80,13 @@ class PostController extends Base
         }
     }
 
-    public function update (GetPostRequest $request, $postId) {
-        $validate = $request->validated();
+    public function update (UpdatePostRequest $request, $postId) {
+        $validated = $request->validated();
         try {
-            $post = Post::withCount(['votes', 'myVote'])->where('id', '=', (int)$postId);
-            $post->update($request->all());
+            $post = Post::withCount(['votes', 'myVote'])->where('id', '=', (int)$postId)->first();
+            $data = $request->all();
+            unset($data['post_id']);
+            $post->update($data);
             return $this->respond([
                 'data' => $post->toArray()
             ]);
@@ -94,9 +102,7 @@ class PostController extends Base
         try {
             $post = Post::find($postId);
             $post->delete();
-            return $this->respond([
-                'data' => $post->toArray()
-            ]);
+            return $this->respond([], self::SUCCESS_EMPTY);
         } catch (\Exception $e) {
             return $this->respond([
                 'error' => $e->getMessage()
@@ -108,7 +114,7 @@ class PostController extends Base
         $validate = $request->validated();
         try {
             Vote::create($request->all());
-            $post = Post::withCount(['votes', 'myVote'])->where('id', '=', (int)$postId);
+            $post = Post::withCount(['votes', 'myVote'])->where('id', '=', (int)$postId)->first();
             return $this->respond([
                 'data' => $post->toArray()
             ]);

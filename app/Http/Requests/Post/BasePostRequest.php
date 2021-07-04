@@ -6,6 +6,7 @@ namespace App\Http\Requests\Post;
 
 use App\Http\Requests\BaseRequest;
 use App\Models\Post;
+use Illuminate\Validation\Rule;
 
 abstract class BasePostRequest extends BaseRequest
 {
@@ -30,7 +31,8 @@ abstract class BasePostRequest extends BaseRequest
                 'max:1000'
             ],
             'content_type' => [
-                'string'
+                'string',
+                Rule::in(['text', 'img', 'video'])
             ]
         ];
     }
