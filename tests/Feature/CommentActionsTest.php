@@ -145,10 +145,14 @@ class CommentActionsTest extends TestCase
     }
 
     public function test_vote_comment () {
-        $comment = Comment::with(['post'])->withCount(['myVote'])
+        $sessionName = $this->userSession;
+        $comment = Comment::withCount(['myVote' => function ($query) use ($sessionName) {
+            $query->where('username', '=', $sessionName);
+        }])
             ->having('my_vote_count', '=', 0)
             ->where('username', '!=', $this->userSession)
             ->get()->random(1)->first();
+        $comment->load('post');
         $response = $this->withSession(['username' => $this->userSession])
             ->json('POST', sprintf('/api/posts/%s/comments/%s/vote', $comment->post->id, $comment->id));
         $response->assertStatus(200)
@@ -161,10 +165,14 @@ class CommentActionsTest extends TestCase
     }
 
     public function test_fail_vote_comment_twice () {
-        $comment = Comment::with(['post'])->withCount(['myVote'])
+        $sessionName = $this->userSession;
+        $comment = Comment::with(['post'])->withCount(['myVote' => function ($query) use ($sessionName) {
+            $query->where('username', '=', $sessionName);
+        }])
             ->having('my_vote_count', '=', 0)
             ->where('username', '!=', $this->userSession)
             ->get()->random(1)->first();
+
         $this->withSession(['username' => $this->userSession])
             ->json('POST', sprintf('/api/posts/%s/comments/%s/vote', $comment->post->id, $comment->id));
 

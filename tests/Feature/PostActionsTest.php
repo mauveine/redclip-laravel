@@ -145,15 +145,28 @@ class PostActionsTest extends TestCase
     }
 
     public function test_vote_post () {
-        $post = Post::where('username', '!=', $this->userSession)
+        $sessionName = $this->userSession;
+        $post = Post::withCount(['myVote' => function ($query) use ($sessionName) {
+            $query->where('username', '=', $sessionName);
+        }])->where('username', '!=', $this->userSession)
+            ->having('my_vote_count', '=', 0)
             ->get()->random(1)->first();
         $response = $this->withSession(['username' => $this->userSession])
             ->json('POST', sprintf('/api/posts/%s/vote', $post->id));
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'id' => $post->id,
+                    'my_vote_count' => 1
+                ]
+            ]);
     }
 
     public function test_fail_vote_post_twice () {
-        $post = Post::where('username', '!=', $this->userSession)
+        $sessionName = $this->userSession;
+        $post = Post::withCount(['myVote' => function ($query) use ($sessionName) {
+            $query->where('username', '=', $sessionName);
+        }])->where('username', '!=', $this->userSession)
             ->get()->random(1)->first();
         $this->withSession(['username' => $this->userSession])
             ->json('POST', sprintf('/api/posts/%s/vote', $post->id));

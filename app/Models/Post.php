@@ -27,8 +27,9 @@ class Post extends Model
     }
 
     public function myVote () {
-        return $this->hasMany(Vote::class, 'post_id', 'id')
-            ->whereNotNull('post_id')->whereNull('comment_id')
-            ->where('username', session()->get('username'));
+        $sessionName = session()->get('username');
+        $relationship = $this->hasOne(Vote::class, 'post_id', 'id')
+            ->whereNotNull('post_id')->whereNull('comment_id');
+        return $sessionName ? $relationship->where('username', '=', $sessionName) : $relationship;
     }
 }

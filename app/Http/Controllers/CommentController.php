@@ -87,14 +87,19 @@ class CommentController extends Base
     public function vote (VoteCommentRequest $request, $postId, $commentId) {
         $validate = $request->validated();
         try {
-            Vote::create($request->all());
+            $data = $request->all();
+            unset($data['post_id']);
+            $vote = Vote::create($data);
             $comment = Comment::withCount(['votes', 'myVote'])->with(['replies'])
                 ->where('id', '=', (int)$commentId)
-                ->where('post_id', '=', (int)$postId)
                 ->first();
             return $this->respond([
                 'data' => $comment->toArray()
             ]);
+        } catch (QueryException $exception) {
+            return $this->respond([
+                'error' => 'Duplicate key'
+            ], parent::FORBIDDEN);
         } catch (\Exception $e) {
             return $this->respond([
                 'error' => $e->getMessage()

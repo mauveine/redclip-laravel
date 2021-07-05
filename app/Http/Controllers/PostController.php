@@ -118,7 +118,12 @@ class PostController extends Base
             return $this->respond([
                 'data' => $post->toArray()
             ]);
-        } catch (\Exception $e) {
+        } catch (QueryException $exception) {
+            return $this->respond([
+                'error' => 'Duplicate key'
+            ], parent::FORBIDDEN);
+        }
+        catch (\Exception $e) {
             return $this->respond([
                 'error' => $e->getMessage()
             ], parent::BAD_REQUEST);

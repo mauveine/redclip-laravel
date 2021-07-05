@@ -23,12 +23,11 @@ class Comment extends Model
     }
 
     public function myVote () {
-        return $this->hasMany(Vote::class, 'comment_id', 'id')
-            ->where(function($query) {
-                $query->orWhereNotNull('post_id');
-                $query->orWhereNotNull('comment_id');
-            })
-            ->where('username', session()->get('username'));
+        $sessionName = session()->get('username');
+        $relationship = $this->hasOne(Vote::class, 'comment_id', 'id')
+            ->whereNull('post_id')->whereNotNull('comment_id');
+        $relationship = $sessionName ? $relationship->where('username', '=', $sessionName) : $relationship;
+        return $relationship;
     }
 
     public function post () {
