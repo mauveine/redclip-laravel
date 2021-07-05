@@ -8,18 +8,6 @@ use Tests\TestCase;
 
 class AnonymousActionsTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_site_reachable()
-    {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
-    }
-
     public function test_site_contains_anon_data () {
         $response = $this->json('GET', '/api/');
         $response->assertJsonStructure([
