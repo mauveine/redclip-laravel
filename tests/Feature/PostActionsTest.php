@@ -28,7 +28,8 @@ class PostActionsTest extends TestCase
         $content = $this->faker->imageUrl();
         $contentType = 'img';
 
-        $response = $this->withSession(['username' => $fakerUserSession])->json('POST', '/api/posts', [
+        $response = $this->withSession(['username' => $fakerUserSession])
+            ->json('POST', '/api/posts', [
             'title' => $title,
             'content' => $content,
             'content_type' => $contentType,

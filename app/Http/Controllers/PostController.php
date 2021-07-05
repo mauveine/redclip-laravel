@@ -32,6 +32,7 @@ class PostController extends Base
             $perPage = $request->input('perPage') ?? 10;
             $orderDirection = $request->input('order') ?? 'desc';
             $posts = Post::withCount(['votes', 'myVote'])
+                ->with(['comments', 'comments.replies'])
                 ->orderBy('created_at', $orderDirection);
 
             $posts = $posts->paginate($perPage, ['*'], 'page', $page);
@@ -41,8 +42,7 @@ class PostController extends Base
         } catch (\Exception $e) {
             return $this->respond([
                 'error' => $e->getMessage(),
-            ], parent::BAD_REQUEST
-            );
+            ], parent::BAD_REQUEST);
         }
     }
 
@@ -52,7 +52,7 @@ class PostController extends Base
         try {
             $post = Post::create($request->all());
             return $this->respond([
-                'data' => $post->toArray()
+                'data' => $post->loadCount(['votes', 'myVote'])->toArray()
             ]);
         } catch (QueryException $exception) {
             return $this->respond([

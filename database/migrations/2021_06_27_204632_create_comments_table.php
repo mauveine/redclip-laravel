@@ -17,10 +17,16 @@ class CreateCommentsTable extends Migration
             $table->id();
             $table->string('username');
             $table->string('reply');
-            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('post_id')->nullable();
+            $table->unsignedBigInteger('comment_id')->nullable();
             $table->timestamps();
 
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+            $table->foreign('comment_id')->references('id')->on('comments')->onDelete('cascade');
+
+            $table->unique(['username', 'reply', 'post_id']);
+            $table->unique(['username', 'reply', 'comment_id']);
+            $table->unique(['username', 'reply', 'post_id', 'comment_id']);
         });
     }
 

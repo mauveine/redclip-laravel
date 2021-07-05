@@ -19,10 +19,16 @@ class Post extends Model
     }
 
     public function votes () {
-        return $this->hasMany(Vote::class, 'post_id', 'id');
+        return $this->hasMany(Vote::class, 'post_id', 'id')->whereNotNull('post_id')->whereNull('comment_id');
+    }
+
+    public function comments () {
+        return $this->hasMany(Comment::class, 'post_id', 'id')->whereNull('comment_id');
     }
 
     public function myVote () {
-        return $this->hasMany(Vote::class, 'post_id', 'id')->where('username', session()->get('username'));
+        return $this->hasMany(Vote::class, 'post_id', 'id')
+            ->whereNotNull('post_id')->whereNull('comment_id')
+            ->where('username', session()->get('username'));
     }
 }

@@ -27,5 +27,17 @@ class VoteSeeder extends Seeder
                 ->votePosts('testusersession1234')
                 ->create();
         }
+
+        for ($i=0; $i< 100; $i++) {
+            Vote::factory()->count(1)
+                ->voteComments()
+                ->create();
+        }
+
+        for ($i=0; $i< 30; $i++) {
+            Vote::factory()->count(1)
+                ->voteComments('testusersession1234')
+                ->create();
+        }
     }
 }
