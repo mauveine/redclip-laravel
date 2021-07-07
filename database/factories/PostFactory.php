@@ -34,7 +34,7 @@ class PostFactory extends Factory
     public function withVideo () {
         return $this->state(function (array $attributes) {
             return [
-                'content' => 'https://youtu.be/ScMzIvxBSi4',
+                'content' => 'https://www.youtube.com/embed/ScMzIvxBSi4',
                 'content_type' => 'video'
             ];
         });

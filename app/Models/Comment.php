@@ -19,7 +19,7 @@ class Comment extends Model
     }
 
     public function votes () {
-        return $this->hasMany(Vote::class, 'comment_id', 'id')->whereNotNull('post_id')->whereNotNull('comment_id');
+        return $this->hasMany(Vote::class, 'comment_id', 'id')->whereNull('post_id')->whereNotNull('comment_id');
     }
 
     public function myVote () {

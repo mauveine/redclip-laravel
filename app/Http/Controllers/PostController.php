@@ -71,7 +71,8 @@ class PostController extends Base
         try {
             $post = Post::withCount(['votes', 'myVote'])->where('id', '=', (int)$postId)->first();
             return $this->respond([
-                'data' => $post->toArray()
+                'data' => $post->load(['comments', 'comments.replies', 'comments.post'])
+                    ->toArray()
             ]);
         } catch (\Exception $e) {
             return $this->respond([
@@ -116,7 +117,8 @@ class PostController extends Base
             Vote::create($request->all());
             $post = Post::withCount(['votes', 'myVote'])->where('id', '=', (int)$postId)->first();
             return $this->respond([
-                'data' => $post->toArray()
+                'data' => $post->load(['comments', 'comments.replies', 'comments.post'])
+                    ->toArray()
             ]);
         } catch (QueryException $exception) {
             return $this->respond([

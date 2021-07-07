@@ -11,15 +11,16 @@ class VotePostRequest extends BasePostRequest
     protected $method = 'POST';
 
     protected $requiredAttributes = [
-        'postId'
+        'post_id'
     ];
 
     public function authorize (): bool {
-        $post = Post::find($this->route('postId'));
+        $postId = $this->route('postId');
+        $post = Post::find($postId);
         if (!$post) {
             return false;
         }
-
-        return !$post->voted($this->session()->get('username'));
+        $voted = $post->voted($this->session()->get('username'));
+        return !$voted;
     }
 }
